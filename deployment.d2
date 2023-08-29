@@ -1,0 +1,33 @@
+Internet: {
+    shape: image
+    icon: https://styleguide.stackit.schwarz/assets/imagery/networks.svg
+}
+
+Internet -> Project.WAN Network
+
+Project: {
+    style: {
+      stroke: black
+      font-color: "#004E5A"
+      fill: "#F8EC17"
+      opacity: 0.8
+    }
+    WAN Network: {
+        shape: image
+        icon: https://styleguide.stackit.schwarz/assets/imagery/networks.svg
+    }
+    LAN Network: {
+        shape: image
+        icon: https://styleguide.stackit.schwarz/assets/imagery/networks.svg
+    }
+    Firewall: {
+        shape: image
+        icon: https://styleguide.stackit.schwarz/imagery/firewall.svg
+    }
+    WAN Network -> Firewall -> LAN Network
+    App: {
+        shape: image
+        icon: https://styleguide.stackit.schwarz/imagery/virtual-machine.svg
+    }
+    LAN Network -> App
+}
