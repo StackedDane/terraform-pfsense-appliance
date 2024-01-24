@@ -1,6 +1,6 @@
 # Create root Volume
 resource "openstack_blockstorage_volume_v3" "fw_root_volume" {
-  name              = "pfsense-2.7.0-root"
+  name              = "pfsense-2.7.2-root"
   description       = "Root Volume"
   size              = 32
   image_id          = openstack_images_image_v2.pfsense_image.id
