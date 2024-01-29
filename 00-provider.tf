@@ -1,10 +1,18 @@
+/*
+Copyright 2023-2024 Schwarz IT KG <markus.brunsch@mail.schwarz>
+
+Use of this source code is governed by an MIT-style
+license that can be found in the LICENSE file or at
+https://opensource.org/licenses/MIT.
+*/
+
 # Define required providers
 terraform {
   required_version = ">= 0.14.0"
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
-      version = "1.52.1"
+      version = "1.53.0"
     }
   }
 }

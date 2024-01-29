@@ -1,3 +1,11 @@
+/*
+Copyright 2023-2024 Schwarz IT KG <markus.brunsch@mail.schwarz>
+
+Use of this source code is governed by an MIT-style
+license that can be found in the LICENSE file or at
+https://opensource.org/licenses/MIT.
+*/
+
 # Upload VPN Appliance Image to OpenStack
 resource "openstack_images_image_v2" "pfsense_image" {
   name             = "pfsense-2.7.2-amd64-image"
