@@ -10,7 +10,7 @@ https://opensource.org/licenses/MIT.
 resource "openstack_blockstorage_volume_v3" "fw_root_volume" {
   name              = "pfsense-2.7.2-root"
   description       = "Root Volume"
-  size              = 32
+  size              = 16
   image_id          = openstack_images_image_v2.pfsense_image.id
   availability_zone = var.zone
   volume_type       = "storage_premium_perf4"
