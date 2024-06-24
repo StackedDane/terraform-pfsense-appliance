@@ -12,7 +12,11 @@ terraform {
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
-      version = "1.53.0"
+      version = "2.0.0"
+    }
+    stackit = {
+      source = "stackitcloud/stackit"
+      version = "0.19.0"
     }
   }
 }
@@ -26,4 +30,9 @@ provider "openstack" {
   password          = var.PASSWORD
   auth_url          = "https://keystone.api.iaas.eu01.stackit.cloud/v3/"
   region            = "RegionOne"
+}
+
+provider "stackit" {
+  region                = "eu01"
+  service_account_token = var.STACKIT_SERVICE_ACCOUNT_TOKEN
 }

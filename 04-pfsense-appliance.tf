@@ -43,21 +43,21 @@ resource "openstack_compute_instance_v2" "instance_fw" {
 # Network Ports
 resource "openstack_networking_port_v2" "wan_port_1" {
   name                  = "FW WAN Port"
-  network_id            = openstack_networking_network_v2.wan_network.id
+  network_id            = stackit_network.wan_network.network_id
   admin_state_up        = "true"
   port_security_enabled = "false"
   fixed_ip {
-    subnet_id = openstack_networking_subnet_v2.wan_subnet_1.id
+    subnet_id = data.openstack_networking_subnet_v2.wan_subnet_1.id
   }
 }
 
 resource "openstack_networking_port_v2" "vpc_port_1" {
   name                  = "FW VPC Port"
-  network_id            = openstack_networking_network_v2.vpc_network.id
+  network_id            = stackit_network.lan_network.network_id
   admin_state_up        = "true"
   port_security_enabled = "false"
   fixed_ip {
-    subnet_id = openstack_networking_subnet_v2.vpc_subnet_1.id
+    subnet_id = data.openstack_networking_subnet_v2.vpc_subnet_1.id
   }
 }
 
@@ -67,8 +67,7 @@ resource "openstack_networking_floatingip_v2" "fip" {
   pool = "floating-net"
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fip" {
+resource "openstack_networking_floatingip_associate_v2" "fip" {
   floating_ip = openstack_networking_floatingip_v2.fip.address
-  instance_id = openstack_compute_instance_v2.instance_fw.id
-  fixed_ip    = openstack_compute_instance_v2.instance_fw.network.0.fixed_ip_v4
+  port_id     = openstack_networking_port_v2.wan_port_1.id
 }

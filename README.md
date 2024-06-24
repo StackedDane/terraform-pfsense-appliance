@@ -1,15 +1,14 @@
-# STACKIT pfSense Deployment
+# STACKIT pfSense Deployment (**Network Area Version**)
 
-Terraform script to deploy an pfSense firewall into STACKIT Cloud.
+Terraform script to deploy an pfSense firewall into a STACKIT Cloud Project with enabled **Network Area**.
+
+> If you are unsure if your project is using a network area please refer to the main branch.
 
 Deployment overview:
 ![](deployment.svg)
 
 The Terraform deployment consists of:
-+ WAN Network
-+ WAN Router with external RouterIP
-+ LAN Network
-+ LAN Router with static default gateway router to the pfSense firewall
++ Creating two SNA networks (WAN, LAN)
 + pfSense firewall VM + disk volume
 + FloatingIP for firewall VM
 + deactivating port security on firewall ports
@@ -17,13 +16,15 @@ The Terraform deployment consists of:
 ## Setup
 **Requirements:**
 + Terraform installed
-+ Access to a STACKIT project
++ Access to a STACKIT project with **enabled Network Area**
 + UAT (OpenStack) credentials
++ Create a [STACKIT Service Account](https://docs.stackit.cloud/stackit/en/getting-started-in-service-accounts-134415831.html) & Grant the Service Account Admin permissions on the Project
 
 ### Installation
 1. Clone Repo
 1. Setup enviroment (.env) variables
 1. Run Terraform `terraform apply`
+1. Create a [static Route](https://docs.stackit.cloud/stackit/en/manage-a-sna-194707707.html#ManageaSNA-Staticroutes) for the Remote Network
 
 ## Default Configuration
 

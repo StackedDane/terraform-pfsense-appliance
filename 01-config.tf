@@ -54,3 +54,15 @@ variable "PASSWORD" {
   type        = string
   description = ""
 }
+
+# STACKIT ProjectID
+variable "STACKIT_PROJECT_ID" {
+  type        = string
+  description = ""
+}
+
+# STACKIT Service Account Token
+variable "STACKIT_SERVICE_ACCOUNT_TOKEN" {
+  type        = string
+  description = ""
+}
