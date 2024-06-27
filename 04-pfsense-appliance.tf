@@ -67,8 +67,7 @@ resource "openstack_networking_floatingip_v2" "fip" {
   pool = "floating-net"
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fip" {
+resource "openstack_networking_floatingip_associate_v2" "fip" {
   floating_ip = openstack_networking_floatingip_v2.fip.address
-  instance_id = openstack_compute_instance_v2.instance_fw.id
-  fixed_ip    = openstack_compute_instance_v2.instance_fw.network.0.fixed_ip_v4
+  port_id     = openstack_networking_port_v2.wan_port_1.id
 }
