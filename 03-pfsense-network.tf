@@ -11,14 +11,14 @@ https://opensource.org/licenses/MIT.
 resource "stackit_network" "lan_network" {
   project_id         = var.STACKIT_PROJECT_ID
   name               = "lan_network"
-  nameservers        = ["208.67.222.222", "9.9.9.9"]
+  ipv4_nameservers        = ["208.67.222.222", "9.9.9.9"]
   ipv4_prefix_length = 24
 }
 
 resource "stackit_network" "wan_network" {
   project_id         = var.STACKIT_PROJECT_ID
   name               = "wan_network"
-  nameservers        = ["208.67.222.222", "9.9.9.9"]
+  ipv4_nameservers        = ["208.67.222.222", "9.9.9.9"]
   ipv4_prefix_length = 28
 }
 
