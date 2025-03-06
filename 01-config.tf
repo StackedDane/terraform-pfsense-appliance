@@ -15,7 +15,13 @@ https://opensource.org/licenses/MIT.
 variable "zone" {
   type        = string
   description = ""
-  default     = "eu01-m"
+  default     = "eu01-1"
+}
+
+variable "zone2" {
+  type        = string
+  description = ""
+  default     = "eu01-2"
 }
 
 # OpenStack VM Flavor

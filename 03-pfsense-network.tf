@@ -13,6 +13,13 @@ resource "openstack_networking_network_v2" "vpc_network" {
   description    = "Local Peering VPC Network"
   admin_state_up = "true"
 }
+#
+# Create CARP Networks
+resource "openstack_networking_network_v2" "carp_network" {
+  name           = "CARP Network"
+  description    = "CARP Peering VPC Network"
+  admin_state_up = "true"
+}
 
 resource "openstack_networking_network_v2" "wan_network" {
   name           = "WAN Network"
@@ -37,7 +44,18 @@ resource "openstack_networking_subnet_v2" "wan_subnet_1" {
   name        = "wan_subnet"
   description = "WAN Network"
   network_id  = openstack_networking_network_v2.wan_network.id
-  cidr        = "100.96.96.0/25"
+  cidr        = "10.9.16.0/24"
+  ip_version  = 4
+  dns_nameservers = [
+    "208.67.222.222",
+    "9.9.9.9",
+  ]
+}
+resource "openstack_networking_subnet_v2" "carp_subnet_1" {
+  name        = "carp_subnet"
+  description = "CARP Network"
+  network_id  = openstack_networking_network_v2.vpc_network.id
+  cidr        = "10.9.22.0/24"
   ip_version  = 4
   dns_nameservers = [
     "208.67.222.222",
