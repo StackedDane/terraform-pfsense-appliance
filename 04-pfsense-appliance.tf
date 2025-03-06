@@ -16,10 +16,18 @@ resource "openstack_blockstorage_volume_v3" "fw_root_volume" {
   availability_zone = var.zone
   volume_type       = "storage_premium_perf4"
 }
+resource "openstack_blockstorage_volume_v3" "fw_root_volume2" {
+  name              = "pfsense-2.7.2-root"
+  description       = "Root Volume"
+  size              = 16
+  image_id          = openstack_images_image_v2.pfsense_image.id
+  availability_zone = var.zone2
+  volume_type       = "storage_premium_perf4"
+}
 
 # Create virtual Server
 resource "openstack_compute_instance_v2" "instance_fw" {
-  name              = "pfSense" # Server name
+  name              = "pfSense01" # Server name
   flavor_name       = var.flavor
   availability_zone = var.zone
 
@@ -39,8 +47,41 @@ resource "openstack_compute_instance_v2" "instance_fw" {
     port = openstack_networking_port_v2.vpc_port_1.id
   }
 
+  network {
+    port = openstack_networking_port_v2.carp_port_1.id
+  }
+
+
 }
 
+# Create virtual Server
+resource "openstack_compute_instance_v2" "instance_fw2" {
+  name              = "pfSense02" # Server name
+  flavor_name       = var.flavor
+  availability_zone = var.zone2
+
+  block_device {
+    uuid                  = openstack_blockstorage_volume_v3.fw_root_volume2.id
+    source_type           = "volume"
+    destination_type      = "volume"
+    boot_index            = 0
+    delete_on_termination = true
+  }
+
+  network {
+    port = openstack_networking_port_v2.wan_port_2.id
+  }
+
+  network {
+    port = openstack_networking_port_v2.vpc_port_2.id
+  }
+
+  network {
+    port = openstack_networking_port_v2.carp_port_2.id
+  }
+
+
+}
 # Network Ports
 resource "openstack_networking_port_v2" "wan_port_1" {
   name                  = "FW WAN Port"
@@ -62,13 +103,61 @@ resource "openstack_networking_port_v2" "vpc_port_1" {
   }
 }
 
+resource "openstack_networking_port_v2" "carp_port_1" {
+  name                  = "FW CARP Port"
+  network_id            = openstack_networking_network_v2.vpc_network.id
+  admin_state_up        = "true"
+  port_security_enabled = "false"
+  fixed_ip {
+    subnet_id = openstack_networking_subnet_v2.carp_subnet_1.id
+  }
+}
+
+# Network Ports
+resource "openstack_networking_port_v2" "wan_port_2" {
+  name                  = "FW WAN Port"
+  network_id            = openstack_networking_network_v2.wan_network.id
+  admin_state_up        = "true"
+  port_security_enabled = "false"
+  fixed_ip {
+    subnet_id = openstack_networking_subnet_v2.wan_subnet_1.id
+  }
+}
+
+resource "openstack_networking_port_v2" "vpc_port_2" {
+  name                  = "FW VPC Port"
+  network_id            = openstack_networking_network_v2.vpc_network.id
+  admin_state_up        = "true"
+  port_security_enabled = "false"
+  fixed_ip {
+    subnet_id = openstack_networking_subnet_v2.vpc_subnet_1.id
+  }
+}
+
+resource "openstack_networking_port_v2" "carp_port_2" {
+  name                  = "FW CARP Port"
+  network_id            = openstack_networking_network_v2.vpc_network.id
+  admin_state_up        = "true"
+  port_security_enabled = "false"
+  fixed_ip {
+    subnet_id = openstack_networking_subnet_v2.carp_subnet_1.id
+  }
+}
 
 # Add FloatingIP
 resource "openstack_networking_floatingip_v2" "fip" {
+  pool = "floating-net"
+}
+# Add FloatingIP
+resource "openstack_networking_floatingip_v2" "fip2" {
   pool = "floating-net"
 }
 
 resource "openstack_networking_floatingip_associate_v2" "fip" {
   floating_ip = openstack_networking_floatingip_v2.fip.address
   port_id     = openstack_networking_port_v2.wan_port_1.id
+}
+resource "openstack_networking_floatingip_associate_v2" "fip2" {
+  floating_ip = openstack_networking_floatingip_v2.fip2.address
+  port_id     = openstack_networking_port_v2.wan_port_2.id
 }
