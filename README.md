@@ -1,6 +1,6 @@
-# STACKIT pfSense Deployment
+# STACKIT pfSense Deployment (High Availability)
 
-Terraform script to deploy an pfSense firewall into STACKIT Cloud.
+Terraform script to deploy an pfSense firewall Cluster into STACKIT Cloud.
 
 Deployment overview:
 ![](deployment.svg)
@@ -48,3 +48,5 @@ Disabled Referer-Check
 Enable allow all wan adresses to connect to the WebUI
 
 Now you can enter the WebUI via the FloatingIP on port 443 the default login is admin:STACKIT123!
+
+> Note: You need to manually initialize the cluster please refer to [the official docs](https://docs.netgate.com/pfsense/en/latest/recipes/high-availability.html).
