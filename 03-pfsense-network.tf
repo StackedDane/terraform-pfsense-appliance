@@ -8,23 +8,19 @@ https://opensource.org/licenses/MIT.
 */
 
 # Get vNET Networks
-resource "stackit_network" "lan_network" {
-  project_id         = var.STACKIT_PROJECT_ID
-  name               = "lan_network"
-  ipv4_nameservers        = ["208.67.222.222", "9.9.9.9"]
-  ipv4_prefix_length = 24
-}
-
 resource "stackit_network" "wan_network" {
   project_id         = var.STACKIT_PROJECT_ID
   name               = "wan_network"
   ipv4_nameservers        = ["208.67.222.222", "9.9.9.9"]
-  ipv4_prefix_length = 28
+  routed             = true
 }
 
-resource "stackit_network_interface" "nic_lan" {
+resource "stackit_network" "lan_network" {
   project_id         = var.STACKIT_PROJECT_ID
-  network_id         = stackit_network.lan_network.network_id
+  name               = "lan_network"
+  ipv4_nameservers   = ["208.67.222.222", "9.9.9.9"]
+  ipv4_prefix_length = 24
+  routed             = true
 }
 
 resource "stackit_network_interface" "nic_wan" {
@@ -32,17 +28,13 @@ resource "stackit_network_interface" "nic_wan" {
   network_id         = stackit_network.wan_network.network_id
 }
 
+resource "stackit_network_interface" "nic_lan" {
+  project_id         = var.STACKIT_PROJECT_ID
+  network_id         = stackit_network.lan_network.network_id
+  depends_on         = [stackit_network_interface.nic_wan]
+}
+
 resource "stackit_public_ip" "example" {
   project_id           = var.STACKIT_PROJECT_ID
   network_interface_id = stackit_network_interface.nic_wan.network_interface_id
 }
-
-
-# Get Subents
-#data "openstack_networking_subnet_v2" "vpc_subnet_1" {
-#  network_id  = stackit_network.lan_network.network_id
-#}
-
-#data "openstack_networking_subnet_v2" "wan_subnet_1" {
-#  network_id  = stackit_network.wan_network.network_id
-#}
