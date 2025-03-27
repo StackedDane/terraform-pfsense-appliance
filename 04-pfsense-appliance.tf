@@ -7,68 +7,36 @@ license that can be found in the LICENSE file or at
 https://opensource.org/licenses/MIT.
 */
 
-# Create root Volume
-resource "openstack_blockstorage_volume_v3" "fw_root_volume" {
+resource "stackit_volume" "pfsense_vol" {
+  project_id        = var.STACKIT_PROJECT_ID
   name              = "pfsense-2.7.2-root"
-  description       = "Root Volume"
+  availability_zone = var.zone
   size              = 16
-  image_id          = openstack_images_image_v2.pfsense_image.id
+  performance_class = "storage_premium_perf4"
+  source = {
+    id = stackit_image.pfsense_image.image_id
+    type = "image"
+  } 
+}
+
+resource "stackit_server" "pfsense_Server" {
+  project_id = var.STACKIT_PROJECT_ID
+  name       = "pfSense"
+  boot_volume = {
+    source_type = "volume"
+    source_id   = stackit_volume.pfsense_vol.volume_id
+  }
   availability_zone = var.zone
-  volume_type       = "storage_premium_perf4"
+  machine_type      = var.flavor
 }
 
-# Create virtual Server
-resource "openstack_compute_instance_v2" "instance_fw" {
-  name              = "pfSense" # Server name
-  flavor_name       = var.flavor
-  availability_zone = var.zone
-
-  block_device {
-    uuid                  = openstack_blockstorage_volume_v3.fw_root_volume.id
-    source_type           = "volume"
-    destination_type      = "volume"
-    boot_index            = 0
-    delete_on_termination = true
-  }
-
-  network {
-    port = openstack_networking_port_v2.wan_port_1.id
-  }
-
-  network {
-    port = openstack_networking_port_v2.vpc_port_1.id
-  }
-
+resource "stackit_server_network_interface_attach" "nic-attachment-lan" {
+  project_id           = var.STACKIT_PROJECT_ID
+  server_id            = stackit_server.pfsense_Server.server_id
+  network_interface_id = stackit_network_interface.nic_lan.network_interface_id
 }
-
-# Network Ports
-resource "openstack_networking_port_v2" "wan_port_1" {
-  name                  = "FW WAN Port"
-  network_id            = openstack_networking_network_v2.wan_network.id
-  admin_state_up        = "true"
-  port_security_enabled = "false"
-  fixed_ip {
-    subnet_id = openstack_networking_subnet_v2.wan_subnet_1.id
-  }
-}
-
-resource "openstack_networking_port_v2" "vpc_port_1" {
-  name                  = "FW VPC Port"
-  network_id            = openstack_networking_network_v2.vpc_network.id
-  admin_state_up        = "true"
-  port_security_enabled = "false"
-  fixed_ip {
-    subnet_id = openstack_networking_subnet_v2.vpc_subnet_1.id
-  }
-}
-
-
-# Add FloatingIP
-resource "openstack_networking_floatingip_v2" "fip" {
-  pool = "floating-net"
-}
-
-resource "openstack_networking_floatingip_associate_v2" "fip" {
-  floating_ip = openstack_networking_floatingip_v2.fip.address
-  port_id     = openstack_networking_port_v2.wan_port_1.id
+resource "stackit_server_network_interface_attach" "nic-attachment-wan" {
+  project_id           = var.STACKIT_PROJECT_ID
+  server_id            = stackit_server.pfsense_Server.server_id
+  network_interface_id = stackit_network_interface.nic_wan.network_interface_id
 }

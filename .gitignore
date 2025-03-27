@@ -35,3 +35,4 @@ terraform.rc
 .env
 .terraform.lock.hcl
 conf.img
+pfsense.qcow2

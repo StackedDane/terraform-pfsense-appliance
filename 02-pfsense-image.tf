@@ -7,12 +7,30 @@ license that can be found in the LICENSE file or at
 https://opensource.org/licenses/MIT.
 */
 
-# Upload VPN Appliance Image to OpenStack
-resource "openstack_images_image_v2" "pfsense_image" {
+# Local copy of the Image 
+resource "null_resource" "pfsense_image_file" {
+    triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "curl -o pfsense.qcow2 https://pfsense.object.storage.eu01.onstackit.cloud/pfsense-ce-2.7.2-amd64-10-12-2024.qcow2"
+  }
+}
+
+# Upload VPN Appliance Image to STACKIT
+resource "stackit_image" "pfsense_image" {
+  project_id       = var.STACKIT_PROJECT_ID
   name             = "pfsense-2.7.2-amd64-image"
-  image_source_url = "https://pfsense.object.storage.eu01.onstackit.cloud/pfsense-ce-2.7.2-amd64-10-12-2024.qcow2"
-  web_download     = true
-  container_format = "bare"
+  local_file_path  = "./pfsense.qcow2"
   disk_format      = "qcow2"
-  visibility       = "shared"
+  depends_on       = [null_resource.pfsense_image_file]
+  min_disk_size    = 10
+  min_ram          = 2
+  config = {
+    uefi           = false
+    cdrom_bus      = "scsi"
+    disk_bus       = "scsi"
+    secure_boot    = false
+  }
 }

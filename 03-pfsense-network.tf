@@ -7,72 +7,42 @@ license that can be found in the LICENSE file or at
 https://opensource.org/licenses/MIT.
 */
 
-# Create vNET Networks
-resource "openstack_networking_network_v2" "vpc_network" {
-  name           = "VPC Network"
-  description    = "Local Peering VPC Network"
-  admin_state_up = "true"
+# Get vNET Networks
+resource "stackit_network" "lan_network" {
+  project_id         = var.STACKIT_PROJECT_ID
+  name               = "lan_network"
+  ipv4_nameservers        = ["208.67.222.222", "9.9.9.9"]
+  ipv4_prefix_length = 24
 }
 
-resource "openstack_networking_network_v2" "wan_network" {
-  name           = "WAN Network"
-  description    = "Transfer Net for binding FloatingIPs"
-  admin_state_up = "true"
+resource "stackit_network" "wan_network" {
+  project_id         = var.STACKIT_PROJECT_ID
+  name               = "wan_network"
+  ipv4_nameservers        = ["208.67.222.222", "9.9.9.9"]
+  ipv4_prefix_length = 28
 }
 
-# Create Subnets
-resource "openstack_networking_subnet_v2" "vpc_subnet_1" {
-  name        = "vpc_subnet"
-  description = "Local VPC Network"
-  network_id  = openstack_networking_network_v2.vpc_network.id
-  cidr        = var.LOCAL_SUBNET
-  ip_version  = 4
-  dns_nameservers = [
-    "208.67.222.222",
-    "9.9.9.9",
-  ]
+resource "stackit_network_interface" "nic_lan" {
+  project_id         = var.STACKIT_PROJECT_ID
+  network_id         = stackit_network.lan_network.network_id
 }
 
-resource "openstack_networking_subnet_v2" "wan_subnet_1" {
-  name        = "wan_subnet"
-  description = "WAN Network"
-  network_id  = openstack_networking_network_v2.wan_network.id
-  cidr        = "100.96.96.0/25"
-  ip_version  = 4
-  dns_nameservers = [
-    "208.67.222.222",
-    "9.9.9.9",
-  ]
+resource "stackit_network_interface" "nic_wan" {
+  project_id         = var.STACKIT_PROJECT_ID
+  network_id         = stackit_network.wan_network.network_id
 }
 
-# Create OpenStack Router
-
-resource "openstack_networking_router_v2" "vpc_router" {
-  name        = "vpc_router"
-  description = "VPC Router"
+resource "stackit_public_ip" "example" {
+  project_id           = var.STACKIT_PROJECT_ID
+  network_interface_id = stackit_network_interface.nic_wan.network_interface_id
 }
 
-resource "openstack_networking_router_interface_v2" "vpc_router_interface_1" {
-  router_id = openstack_networking_router_v2.vpc_router.id
-  subnet_id = openstack_networking_subnet_v2.vpc_subnet_1.id
-}
 
-resource "openstack_networking_router_v2" "wan_router" {
-  name                = "wan_router"
-  description         = "WAN Router"
-  external_network_id = "970ace5c-458f-484a-a660-0903bcfd91ad"
-}
+# Get Subents
+#data "openstack_networking_subnet_v2" "vpc_subnet_1" {
+#  network_id  = stackit_network.lan_network.network_id
+#}
 
-# Create Router interfaces
-resource "openstack_networking_router_interface_v2" "wan_router_interface_1" {
-  router_id = openstack_networking_router_v2.wan_router.id
-  subnet_id = openstack_networking_subnet_v2.wan_subnet_1.id
-}
-
-# Create static routing entry for VPC Traffic to hit the pfSense instead of the default gateway
-resource "openstack_networking_router_route_v2" "vpc_router_route_1" {
-  depends_on       = [openstack_networking_router_interface_v2.vpc_router_interface_1]
-  router_id        = openstack_networking_router_v2.vpc_router.id
-  destination_cidr = "0.0.0.0/0"
-  next_hop         = openstack_compute_instance_v2.instance_fw.network.1.fixed_ip_v4
-}
+#data "openstack_networking_subnet_v2" "wan_subnet_1" {
+#  network_id  = stackit_network.wan_network.network_id
+#}
