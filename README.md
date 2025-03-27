@@ -18,7 +18,7 @@ The Terraform deployment consists of:
 **Requirements:**
 + Terraform installed
 + Access to a STACKIT project
-+ UAT (OpenStack) credentials
++ STACKIT Service-Account-Token
 
 ### Installation
 1. Clone Repo
