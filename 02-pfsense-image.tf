@@ -14,7 +14,7 @@ resource "null_resource" "pfsense_image_file" {
   }
 
   provisioner "local-exec" {
-    command = "curl -o pfsense.qcow2 https://pfsense.object.storage.eu01.onstackit.cloud/pfsense-ce-2.7.2-amd64-29-01-2024.qcow2"
+    command = "curl -o pfsense.qcow2 https://pfsense.object.storage.eu01.onstackit.cloud/pfsense-ce-2.7.2-amd64-10-12-2024.qcow2"
   }
   lifecycle {
     ignore_changes = all
