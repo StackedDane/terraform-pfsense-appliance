@@ -14,9 +14,9 @@ resource "stackit_volume" "pfsense_vol" {
   size              = 16
   performance_class = "storage_premium_perf4"
   source = {
-    id = stackit_image.pfsense_image.image_id
+    id   = stackit_image.pfsense_image.image_id
     type = "image"
-  } 
+  }
 }
 
 resource "stackit_server" "pfsense_Server" {
@@ -34,7 +34,7 @@ resource "stackit_server_network_interface_attach" "nic-attachment-lan" {
   project_id           = var.STACKIT_PROJECT_ID
   server_id            = stackit_server.pfsense_Server.server_id
   network_interface_id = stackit_network_interface.nic_lan.network_interface_id
-  depends_on = [ stackit_server_network_interface_attach.nic-attachment-wan ]
+  depends_on           = [stackit_server_network_interface_attach.nic-attachment-wan]
 }
 resource "stackit_server_network_interface_attach" "nic-attachment-wan" {
   project_id           = var.STACKIT_PROJECT_ID

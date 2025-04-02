@@ -1,6 +1,6 @@
 /*
 Copyright 2023 Schwarz IT KG <markus.brunsch@mail.schwarz>
-Copyright 2024 STACKIT GmbH & Co. KG <markus.brunsch@stackit.cloud>
+Copyright 2024-2025 STACKIT GmbH & Co. KG <markus.brunsch@stackit.cloud>
 
 Use of this source code is governed by an MIT-style
 license that can be found in the LICENSE file or at
@@ -12,14 +12,14 @@ terraform {
   required_version = ">= 0.14.0"
   required_providers {
     stackit = {
-      source = "stackitcloud/stackit"
+      source  = "stackitcloud/stackit"
       version = "0.47.0"
     }
   }
 }
 
 provider "stackit" {
-  default_region                = "eu01"
+  default_region        = "eu01"
   service_account_token = var.STACKIT_SERVICE_ACCOUNT_TOKEN
   enable_beta_resources = true
 }

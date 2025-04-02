@@ -1,6 +1,6 @@
 /*
 Copyright 2023 Schwarz IT KG <markus.brunsch@mail.schwarz>
-Copyright 2024 STACKIT GmbH & Co. KG <markus.brunsch@stackit.cloud>
+Copyright 2024-2025 STACKIT GmbH & Co. KG <markus.brunsch@stackit.cloud>
 
 Use of this source code is governed by an MIT-style
 license that can be found in the LICENSE file or at
