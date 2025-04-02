@@ -1,6 +1,6 @@
 /*
 Copyright 2023 Schwarz IT KG <markus.brunsch@mail.schwarz>
-Copyright 2024 STACKIT GmbH & Co. KG <markus.brunsch@stackit.cloud>
+Copyright 2024-2025 STACKIT GmbH & Co. KG <markus.brunsch@stackit.cloud>
 
 Use of this source code is governed by an MIT-style
 license that can be found in the LICENSE file or at
@@ -34,6 +34,7 @@ resource "stackit_server_network_interface_attach" "nic-attachment-lan" {
   project_id           = var.STACKIT_PROJECT_ID
   server_id            = stackit_server.pfsense_Server.server_id
   network_interface_id = stackit_network_interface.nic_lan.network_interface_id
+  depends_on = [ stackit_server_network_interface_attach.nic-attachment-wan ]
 }
 resource "stackit_server_network_interface_attach" "nic-attachment-wan" {
   project_id           = var.STACKIT_PROJECT_ID
