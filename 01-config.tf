@@ -29,7 +29,12 @@ variable "flavor" {
 variable "LOCAL_SUBNET" {
   type        = string
   description = ""
-  default     = "10.0.0.0/24"
+  default     = "10.10.0.0/24"
+}
+variable "LOCAL_FIREWALL_IP" {
+  type        = string
+  description = ""
+  default     = "10.10.0.220"
 }
 
 # STACKIT ProjectID

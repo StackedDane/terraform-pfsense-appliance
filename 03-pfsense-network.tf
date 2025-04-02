@@ -12,13 +12,15 @@ resource "stackit_network" "wan_network" {
   project_id       = var.STACKIT_PROJECT_ID
   name             = "wan_network"
   ipv4_nameservers = ["208.67.222.222", "9.9.9.9"]
-  routed           = false
 }
 
 resource "stackit_network" "lan_network" {
   project_id       = var.STACKIT_PROJECT_ID
   name             = "lan_network"
   ipv4_nameservers = ["208.67.222.222", "9.9.9.9"]
+  ipv4_prefix      = var.LOCAL_SUBNET
+  ipv4_gateway     = var.LOCAL_FIREWALL_IP
+  routed           = false
 }
 
 resource "stackit_network_interface" "nic_wan" {
@@ -30,6 +32,7 @@ resource "stackit_network_interface" "nic_wan" {
 resource "stackit_network_interface" "nic_lan" {
   project_id = var.STACKIT_PROJECT_ID
   network_id = stackit_network.lan_network.network_id
+  ipv4       = var.LOCAL_FIREWALL_IP
   security   = false
 }
 
