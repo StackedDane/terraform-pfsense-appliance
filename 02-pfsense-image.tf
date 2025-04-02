@@ -29,8 +29,5 @@ resource "stackit_image" "pfsense_image" {
   min_ram          = 2
   config = {
     uefi           = false
-    cdrom_bus      = "scsi"
-    disk_bus       = "scsi"
-    secure_boot    = false
   }
 }
