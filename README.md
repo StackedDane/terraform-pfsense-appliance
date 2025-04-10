@@ -7,9 +7,7 @@ Deployment overview:
 
 The Terraform deployment consists of:
 + WAN Network
-+ WAN Router with external RouterIP
 + LAN Network
-+ LAN Router with static default gateway router to the pfSense firewall
 + pfSense firewall VM + disk volume
 + FloatingIP for firewall VM
 + deactivating port security on firewall ports
